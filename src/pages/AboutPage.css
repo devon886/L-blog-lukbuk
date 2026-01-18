@@ -1,0 +1,30 @@
+.about-page {
+  padding: 2rem 0;
+}
+
+.about-content a {
+  color: gray;
+  text-decoration: none;
+}
+
+.about-content a:hover {
+  color: gray;
+  text-decoration: underline;
+}
+
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  font-size: 1.2rem;
+  line-height: 1.8;
+}
+
+
+
+@media (max-width: 768px) {
+  .about-content {
+    padding: 0 1rem;
+    font-size: 1.1rem;
+  }
+}
