@@ -5,6 +5,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   
+  // 开发环境配置
+  dev: {
+    sourcemap: false,
+  },
+  
   // 优化配置
   build: {
     // 启用代码分割
