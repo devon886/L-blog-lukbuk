@@ -11,7 +11,7 @@ const extractPlainText = (htmlContent: string): string => {
   
   try {
     // 首先去除所有HTML注释
-    let cleanHtml = htmlContent.replace(/<!--[\s\S]*?-->/g, '');
+    const cleanHtml = htmlContent.replace(/<!--[\s\S]*?-->/g, '');
     
     // 检查是否是完整的HTML文档
     const isFullHtml = cleanHtml.trim().startsWith('<!DOCTYPE html') || cleanHtml.trim().startsWith('<html');
@@ -62,7 +62,7 @@ const extractPlainText = (htmlContent: string): string => {
         // 如果没有<p>标签，去除所有HTML标签
         return cleanHtml.replace(/<[^>]*>/g, '').trim();
       }
-    } catch (fallbackError) {
+    } catch {
       // 最后的回退方案
       return '';
     }
@@ -83,6 +83,8 @@ interface Column {
   created_at: string;
 }
 
+type ContentItem = Post | Column;
+
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [columns, setColumns] = useState<Column[]>([]);
@@ -92,6 +94,23 @@ const HomePage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const postsPerPage = 10;
+
+  const [mixedContent, setMixedContent] = useState<ContentItem[]>([]);
+
+  const mergeAndSortContent = (posts: Post[], columns: Column[]): ContentItem[] => {
+    const allContent: ContentItem[] = [...posts, ...columns];
+    return allContent.sort((a, b) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  };
+
+  const isColumn = (item: ContentItem): item is Column => {
+    return 'description' in item;
+  };
+
+  const isPost = (item: ContentItem): item is Post => {
+    return 'content' in item;
+  };
 
   // 使用缓存获取专栏数据（一次性加载）
   const { 
@@ -115,11 +134,12 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (cachedColumns) {
       setColumns(cachedColumns);
+      setMixedContent(mergeAndSortContent(posts, cachedColumns));
     }
     if (columnsError) {
       setError(columnsError);
     }
-  }, [cachedColumns, columnsError]);
+  }, [cachedColumns, columnsError, posts]);
 
   // 使用缓存获取第一页文章数据
   const { 
@@ -133,7 +153,7 @@ const HomePage: React.FC = () => {
         .from('posts')
         .select('*')
         .eq('is_published', true)
-        .is('column_id', null) // 只获取未投专栏的文章
+        .is('column_id', null)
         .order('created_at', { ascending: false })
         .range(0, postsPerPage - 1);
 
@@ -162,6 +182,7 @@ const HomePage: React.FC = () => {
           if (error) throw error;
 
           setPosts(prevPosts => [...prevPosts, ...(data || [])]);
+          setMixedContent(mergeAndSortContent([...posts, ...(data || [])], columns));
           setHasMore((data || []).length === postsPerPage);
         } catch (err) {
           setError('获取更多数据失败');
@@ -179,12 +200,13 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (cachedPosts) {
       setPosts(cachedPosts);
+      setMixedContent(mergeAndSortContent(cachedPosts, columns));
       setHasMore(cachedPosts.length === postsPerPage);
     }
     if (postsError) {
       setError(postsError);
     }
-  }, [cachedPosts, postsError]);
+  }, [cachedPosts, postsError, columns]);
 
   // 合并加载状态
   useEffect(() => {
@@ -207,46 +229,44 @@ const HomePage: React.FC = () => {
           <div className="loading">加载中...</div>
         ) : error ? (
           <div className="error">{error}</div>
-        ) : (columns.length === 0 && posts.length === 0) ? (
+        ) : mixedContent.length === 0 ? (
           <div className="empty-state">暂无内容</div>
         ) : (
           <div className="post-list">
-            {/* 专栏卡片 */}
-            {columns.length > 0 && (
-              columns.map((column) => (
-                <ColumnCard key={column.id} column={column} />
-              ))
-            )}
-            
-            {/* 文章列表 */}
-            {posts.length > 0 && (
-              posts.map((post) => (
-                <div key={post.id} className="post-item">
-                  <div className="post-header">
-                    <Link to={`/posts/${post.id}`} className="post-link">
-                      <h2 className="post-title">
-                        {post.title.length > 30 ? `${post.title.substring(0, 30)}...` : post.title}
-                      </h2>
-                    </Link>
-                    <div className="post-meta">
-                      <time className="post-date">
-                        {new Date(post.created_at).toLocaleDateString('zh-CN', {
-                          year: 'numeric',
-                          month: 'numeric',
-                          day: 'numeric'
-                        }).replace(/\./g, '/')}
-                      </time>
+            {/* 混合渲染专栏和文章 */}
+            {mixedContent.map((item) => {
+              if (isColumn(item)) {
+                return <ColumnCard key={item.id} column={item} />;
+              } else if (isPost(item)) {
+                return (
+                  <div key={item.id} className="post-item">
+                    <div className="post-header">
+                      <Link to={`/posts/${item.id}`} className="post-link">
+                        <h2 className="post-title">
+                          {item.title.length > 30 ? `${item.title.substring(0, 30)}...` : item.title}
+                        </h2>
+                      </Link>
+                      <div className="post-meta">
+                        <time className="post-date">
+                          {new Date(item.created_at).toLocaleDateString('zh-CN', {
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric'
+                          }).replace(/\./g, '/')}
+                        </time>
+                      </div>
                     </div>
+                    <p className="post-excerpt">
+                      {(() => {
+                        const plainText = extractPlainText(item.content);
+                        return plainText.length > 150 ? `${plainText.substring(0, 150)}...` : plainText;
+                      })()}
+                    </p>
                   </div>
-                  <p className="post-excerpt">
-                    {(() => {
-                      const plainText = extractPlainText(post.content);
-                      return plainText.length > 150 ? `${plainText.substring(0, 150)}...` : plainText;
-                    })()}
-                  </p>
-                </div>
-              ))
-            )}
+                );
+              }
+              return null;
+            })}
             
             {/* 加载更多按钮 */}
             {hasMore && (
