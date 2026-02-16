@@ -5,6 +5,7 @@ import './PostList.css';
 interface Post {
   id: string;
   title: string;
+  slug: string;
   content: string;
   created_at: string;
 }
@@ -83,7 +84,7 @@ const PostList: React.FC<PostListProps> = React.memo(({ posts }) => {
       {posts.map((post) => (
         <div key={post.id} className="post-item">
           <div className="post-header">
-            <Link to={`/posts/${post.id}`} className="post-link">
+            <Link to={`/posts/${post.slug}`} className="post-link">
               <h2 className="post-title truncate-title">
                 {post.title.length > 30 ? `${post.title.substring(0, 30)}...` : post.title}
               </h2>
