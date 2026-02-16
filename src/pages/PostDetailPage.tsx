@@ -10,6 +10,7 @@ import { useCachedData } from '../hooks/useCachedData';
 interface Post {
   id: string;
   title: string;
+  slug: string;
   content: string;
   created_at: string;
 }
@@ -32,7 +33,7 @@ const PostDetailPage: React.FC = () => {
       const { data, error } = await supabase
         .from('posts')
         .select('*')
-        .eq('id', id)
+        .eq('slug', id)
         .single();
 
       if (error) throw error;
