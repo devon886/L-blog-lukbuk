@@ -15,6 +15,7 @@ const WritePage: React.FC = () => {
   const editId = searchParams.get('edit');
   const [loading, setLoading] = useState(false);
   const [initialContent, setInitialContent] = useState('');
+  const [initialSlug, setInitialSlug] = useState('');
   const [columns, setColumns] = useState<Column[]>([]);
   const [initialColumnId, setInitialColumnId] = useState<string | null>(null);
 
@@ -51,6 +52,7 @@ const WritePage: React.FC = () => {
           if (!postData) throw new Error('文章不存在');
 
           setInitialContent(postData.content);
+          setInitialSlug(postData.slug || '');
           setInitialColumnId(postData.column_id || null);
         }
       } catch (err) {
@@ -68,13 +70,14 @@ const WritePage: React.FC = () => {
     loadData();
   }, [editId, navigate]);
 
-  const handleSubmit = async (title: string, content: string, isPublished: boolean, columnId?: string | null) => {
+  const handleSubmit = async (title: string, content: string, isPublished: boolean, columnId?: string | null, slug?: string) => {
     try {
       setLoading(true);
 
       const postData = {
         title,
         content,
+        slug,
         is_published: isPublished,
         column_id: columnId || null
       };
@@ -89,19 +92,19 @@ const WritePage: React.FC = () => {
         if (error) throw error;
         
         // 清除相关缓存
-        localStorage.removeItem(`post_detail_${editId}`);
+        localStorage.removeItem(`post_detail_${slug}`);
         localStorage.removeItem('homepage_posts_page_1');
         if (columnId) {
           localStorage.removeItem(`column_detail_${columnId}`);
         }
         
-        navigate(`/posts/${editId}`);
+        navigate(`/posts/${slug}`);
       } else {
         // 创建新文章
         const { data, error } = await supabase
           .from('posts')
           .insert([postData])
-          .select('id')
+          .select('slug')
           .single();
 
         if (error) throw error;
@@ -112,7 +115,7 @@ const WritePage: React.FC = () => {
           localStorage.removeItem(`column_detail_${columnId}`);
         }
         
-        navigate(`/posts/${data.id}`);
+        navigate(`/posts/${data.slug}`);
       }
     } catch (err) {
       alert('保存文章失败：' + (err as Error).message);
@@ -136,6 +139,7 @@ const WritePage: React.FC = () => {
         <h1 className="page-title">{editId ? '编辑文章' : '写文章'}</h1>
         <WriteForm
           initialContent={initialContent}
+          initialSlug={initialSlug}
           onSubmit={handleSubmit}
           isEditing={!!editId}
           columns={columns}
