@@ -7,12 +7,22 @@ import './CreateColumnPage.css';
 
 const CreateColumnPage: React.FC = () => {
   const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const navigate = useNavigate();
   const { user, isLoading: authLoading } = useAuth();
+
+  const generateSlug = (title: string): string => {
+    return title
+      .toLowerCase()
+      .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
   
   // 检查管理功能是否启用
   useEffect(() => {
@@ -41,9 +51,11 @@ const CreateColumnPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
 
+      const finalSlug = slug.trim() || generateSlug(title);
+
       const { error } = await supabase
         .from('columns')
-        .insert([{ title, description }])
+        .insert([{ title, slug: finalSlug, description }])
         .select()
         .single();
 
@@ -85,6 +97,19 @@ const CreateColumnPage: React.FC = () => {
               required
               disabled={isLoading}
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="slug">自定义URL（可选）</label>
+            <input
+              type="text"
+              id="slug"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="留空则自动生成，例如：my-column"
+              disabled={isLoading}
+            />
+            <small className="form-hint">URL将显示为：/columns/{slug || 'your-slug'}</small>
           </div>
 
           <div className="form-group">
