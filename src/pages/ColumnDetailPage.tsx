@@ -8,6 +8,7 @@ import './ColumnDetailPage.css';
 interface Column {
   id: string;
   title: string;
+  slug: string;
   description: string;
   created_at: string;
 }
@@ -15,6 +16,7 @@ interface Column {
 interface Post {
   id: string;
   title: string;
+  slug: string;
   content: string;
   created_at: string;
 }
@@ -44,27 +46,29 @@ const ColumnDetailPage: React.FC = () => {
         throw new Error('专栏ID不存在');
       }
 
-      // 并行获取专栏详情和该专栏下的文章
-      const [columnResult, postsResult] = await Promise.all([
-        supabase
-          .from('columns')
-          .select('*')
-          .eq('id', id)
-          .single(),
-        supabase
-          .from('posts')
-          .select('*')
-          .eq('column_id', id)
-          .eq('is_published', true)
-          .order('created_at', { ascending: false })
-      ]);
+      // 先通过 slug 获取专栏详情
+      const { data: columnData, error: columnError } = await supabase
+        .from('columns')
+        .select('*')
+        .eq('slug', id)
+        .single();
 
-      if (columnResult.error) throw columnResult.error;
-      if (postsResult.error) throw postsResult.error;
+      if (columnError) throw columnError;
+      if (!columnData) throw new Error('专栏不存在');
+
+      // 然后通过专栏的 id 获取该专栏下的文章
+      const { data: postsData, error: postsError } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('column_id', columnData.id)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+
+      if (postsError) throw postsError;
 
       return {
-        column: columnResult.data,
-        posts: postsResult.data || []
+        column: columnData,
+        posts: postsData || []
       };
     },
     [id],
