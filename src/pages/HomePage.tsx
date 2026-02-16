@@ -72,6 +72,7 @@ const extractPlainText = (htmlContent: string): string => {
 interface Post {
   id: string;
   title: string;
+  slug: string;
   content: string;
   created_at: string;
 }
@@ -79,6 +80,7 @@ interface Post {
 interface Column {
   id: string;
   title: string;
+  slug: string;
   description: string;
   created_at: string;
 }
@@ -121,7 +123,7 @@ const HomePage: React.FC = () => {
     async () => {
       const { data, error } = await supabase
         .from('columns')
-        .select('*')
+        .select('id, title, slug, description, created_at')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -241,7 +243,7 @@ const HomePage: React.FC = () => {
                 return (
                   <div key={item.id} className="post-item">
                     <div className="post-header">
-                      <Link to={`/posts/${item.id}`} className="post-link">
+                      <Link to={`/posts/${item.slug}`} className="post-link">
                         <h2 className="post-title">
                           {item.title.length > 30 ? `${item.title.substring(0, 30)}...` : item.title}
                         </h2>
