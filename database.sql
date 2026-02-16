@@ -5,6 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS posts (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   title TEXT NOT NULL,
+  slug TEXT UNIQUE,
   content TEXT NOT NULL,
   is_published BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -72,6 +73,7 @@ $$;
 CREATE TABLE IF NOT EXISTS columns (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   title TEXT NOT NULL,
+  slug TEXT UNIQUE,
   description TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -130,6 +132,31 @@ $$;
 -- 修改posts表，添加column_id字段关联专栏
 ALTER TABLE posts ADD COLUMN IF NOT EXISTS column_id UUID REFERENCES columns(id);
 
+-- 添加slug字段用于自定义URL（如果表已存在）
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
+
+-- 为现有文章生成slug（基于标题）
+UPDATE posts SET slug = 
+  LOWER(
+    REGEXP_REPLACE(
+      REGEXP_REPLACE(title, '[^a-zA-Z0-9\u4e00-\u9fa5\s-]', '', 'g'),
+      '\s+', '-', 'g'
+    )
+  )
+WHERE slug IS NULL;
+
+-- 为columns表添加slug字段（如果表已存在）
+ALTER TABLE columns ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
+
+-- 为现有专栏生成slug（基于标题）
+UPDATE columns SET slug = 
+  LOWER(
+    REGEXP_REPLACE(
+      REGEXP_REPLACE(title, '[^a-zA-Z0-9\u4e00-\u9fa5\s-]', '', 'g'),
+      '\s+', '-', 'g'
+    )
+  )
+WHERE slug IS NULL;
 -- 查询所有已发布的文章
 SELECT * FROM posts WHERE is_published = true ORDER BY created_at DESC;
 
