@@ -8,7 +8,8 @@ interface Column {
 
 interface WriteFormProps {
   initialContent?: string;
-  onSubmit: (title: string, content: string, isPublished: boolean, columnId?: string | null) => void;
+  initialSlug?: string;
+  onSubmit: (title: string, content: string, isPublished: boolean, columnId?: string | null, slug?: string) => void;
   isEditing?: boolean;
   columns?: Column[];
   initialColumnId?: string | null;
@@ -16,6 +17,7 @@ interface WriteFormProps {
 
 const WriteForm: React.FC<WriteFormProps> = ({ 
   initialContent = '', 
+  initialSlug = '',
   onSubmit, 
   isEditing = false,
   columns = [],
@@ -23,23 +25,44 @@ const WriteForm: React.FC<WriteFormProps> = ({
 }) => {
 
   const [content, setContent] = useState(initialContent);
+  const [slug, setSlug] = useState(initialSlug);
   const [isPublished, setIsPublished] = useState(true);
   const [columnId, setColumnId] = useState<string | null>(initialColumnId);
+
+  const generateSlug = (title: string): string => {
+    return title
+      .toLowerCase()
+      .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (content.trim()) {
-      // 从内容中提取标题
       const titleMatch = content.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
       const extractedTitle = titleMatch ? titleMatch[1].trim() : '无标题文章';
-      onSubmit(extractedTitle, content, isPublished, columnId);
+      const finalSlug = slug.trim() || generateSlug(extractedTitle);
+      onSubmit(extractedTitle, content, isPublished, columnId, finalSlug);
     }
   };
 
   return (
     <div className="write-form-container">
       <form className="write-form" onSubmit={handleSubmit}>
-
+        <div className="form-group">
+          <label htmlFor="slug" className="form-label">自定义URL（可选）</label>
+          <input
+            id="slug"
+            type="text"
+            className="form-input"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="留空则自动生成，例如：my-first-post"
+          />
+          <small className="form-hint">URL将显示为：/posts/{slug || 'your-slug'}</small>
+        </div>
 
         <div className="form-group">
           <label htmlFor="content" className="form-label">内容</label>
