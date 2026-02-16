@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 interface Column {
   id: string;
   title: string;
+  slug: string;
   description: string;
   created_at: string;
 }
@@ -16,7 +17,7 @@ const ColumnCard: React.FC<ColumnCardProps> = ({ column }) => {
   return (
     <div className="post-item">
       <div className="post-header">
-        <Link to={`/columns/${column.id}`} className="post-link">
+        <Link to={`/columns/${column.slug}`} className="post-link">
           <h2 className="post-title">
             {column.title.length > 30 ? `${column.title.substring(0, 30)}...` : column.title}
           </h2>
