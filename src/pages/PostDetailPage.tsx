@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import PostDetail from '../components/PostDetail';
+import CommentsSection from '../components/CommentsSection';
 import { supabase } from '../supabase/client';
 import { useAuth } from '../contexts/AuthContext';
 import { CONFIG } from '../config';
@@ -102,6 +103,7 @@ const PostDetailPage: React.FC = () => {
               onDelete={CONFIG.ADMIN_ENABLED && user ? handleDelete : undefined} 
               isAuthor={CONFIG.ADMIN_ENABLED && !!user} 
             />
+            <CommentsSection postId={post.id} />
           </>
         ) : (
           <div className="error">文章不存在</div>
