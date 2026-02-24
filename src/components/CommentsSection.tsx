@@ -91,15 +91,20 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     }
 
     try {
+      const insertData: Record<string, unknown> = {
+        post_id: postId,
+        content,
+        author_name: authorName,
+        author_email: authorEmail
+      };
+
+      if (parentId) {
+        insertData.parent_id = parentId;
+      }
+
       const { error } = await supabase
         .from('comments')
-        .insert([{
-          post_id: postId,
-          parent_id: parentId,
-          content,
-          author_name: authorName,
-          author_email: authorEmail
-        }]);
+        .insert([insertData]);
 
       if (error) {
         alert('发表评论失败，请重试');
