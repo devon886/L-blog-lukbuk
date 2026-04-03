@@ -156,7 +156,7 @@ const HomePage: React.FC = () => {
           <div className="sidebar-content">
             <div className="profile-section">
               <img 
-                src="public/lukbuk.jpg" 
+                src="public/lukbuk.png" 
                 alt="lukbuk" 
                 className="profile-avatar"
               />
