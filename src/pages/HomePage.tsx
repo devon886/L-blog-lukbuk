@@ -155,11 +155,7 @@ const HomePage: React.FC = () => {
         <aside className="sidebar">
           <div className="sidebar-content">
             <div className="profile-section">
-              <img 
-                src="/lukbuk.jpg" 
-                alt="lukbuk" 
-                className="profile-avatar"
-              />
+              <div className="profile-avatar">L</div>
               <h2 className="profile-name">Lukbuk</h2>
             </div>
             
