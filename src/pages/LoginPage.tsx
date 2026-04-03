@@ -21,10 +21,9 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(email, password);
-      // 登录成功后重定向到首页
       navigate('/');
-    } catch (error) {
-      // 错误已在useAuth中处理
+    } catch {
+      // 错误已在 useAuth 中处理
     }
   };
 
