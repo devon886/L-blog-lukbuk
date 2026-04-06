@@ -1,50 +1,50 @@
-[README.md](https://github.com/user-attachments/files/24695600/README.md)
-# Blog Application
+[README.md](https://github.com/user-attachments/files/26493625/README.md)# L-blog-lukbuk
 
-A modern blog application built with React + TypeScript + Vite, supporting column management, article publishing, and user authentication.
+A minimalist personal blog application built with React + TypeScript + Vite. Features a clean design with profile sidebar, article publishing, and responsive layout.
 
 ## ✨ Features
 
 - 📝 **Article Management**: Publish, edit, and delete articles
-- 📚 **Column Functionality**: Create columns and publish articles to columns
-- ⚡ **Performance Optimization**: Component lazy loading, pagination, and code splitting
-- 🔧 **Admin Functionality**: Control write/edit/delete features via environment variables
+-  **User Authentication**: Secure login system powered by Supabase
+- 📱 **Responsive Design**: Optimized for desktop and mobile devices
+- ⚡ **Performance**: Code splitting, lazy loading, and efficient caching
+- 🎨 **Minimalist Design**: Clean black & white theme with profile sidebar
+- 🔧 **Admin Control**: Environment-based feature toggles
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-- **Frontend Framework**: React 19 + TypeScript
+- **Frontend**: React 19 + TypeScript
 - **Build Tool**: Vite (rolldown-vite)
 - **Routing**: React Router DOM 7
-- **Backend**: Supabase (Authentication + Database)
+- **Backend**: Supabase (Auth + Database)
 - **State Management**: React Context API
 - **Styling**: CSS Modules
-- **Code Standards**: ESLint + TypeScript ESLint
 
 ## 🚀 Quick Start
 
-### Environment Requirements
+### Prerequisites
 
 - Node.js >= 18
 - npm >= 9
 
-### Installation Steps
+### Installation
 
-1. **Clone the Repository**
+1. **Clone the repository**
 
 ```bash
 git clone https://github.com/devon886/L-blog-lukbuk.git
 cd L-blog-lukbuk
 ```
 
-2. **Install Dependencies**
+2. **Install dependencies**
 
 ```bash
 npm install
 ```
 
-3. **Configure Environment Variables**
+3. **Configure environment variables**
 
-Create a `.env` file in the project root directory with the following content:
+Create a `.env` file in the root directory:
 
 ```env
 VITE_SUPABASE_URL=your-supabase-url
@@ -52,175 +52,164 @@ VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 VITE_ADMIN_ENABLED=true
 ```
 
-4. **Start Development Server**
+4. **Start development server**
 
 ```bash
 npm run dev
 ```
 
-The application will start at `http://localhost:5173`.
+Visit `http://localhost:5173` in your browser.
 
-5. **Build Production Version**
+5. **Build for production**
 
 ```bash
 npm run build
 ```
 
-Build output will be in the `dist` directory.
+Production files will be generated in the `dist` directory.
 
-6. **Preview Production Version**
+6. **Preview production build**
 
 ```bash
 npm run preview
 ```
 
-## 🚀 Deploy to Netlify
+## 🌐 Deploy to Netlify
 
-### 1. Import Project via GitHub
+### Option 1: GitHub Integration
 
-1. Visit [Netlify](https://app.netlify.com/) and log in
-2. Click "Add new site" > "Import an existing project"
-3. Select "GitHub" as the Git provider
-4. Search for and select the project `devon886/L-blog-lukbuk`
-5. Click "Deploy site"
+1. Visit [Netlify](https://app.netlify.com/) and sign in
+2. Click "Add new site" → "Import an existing project"
+3. Connect your GitHub account and select `devon886/L-blog-lukbuk`
+4. Click "Deploy site"
 
-### 2. Configure Environment Variables
+### Option 2: Manual Configuration
 
-1. In your Netlify project, go to "Site settings" > "Build & deploy" > "Environment variables"
-2. Click "Add a variable" to add the following environment variables:
-   - `VITE_SUPABASE_URL`: Your Supabase URL
+1. **Configure build settings**:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+
+2. **Set environment variables** in Netlify dashboard:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
    - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
-   - `VITE_ADMIN_ENABLED`: `true`
-3. Save the environment variables
+   - `VITE_ADMIN_ENABLED`: Set to `true`
 
-### 3. Configure Build Command
-
-Netlify will automatically detect Vite project build commands by default, but you can also configure manually:
-
-- Build command: `npm run build`
-- Publish directory: `dist`
-
-### 4. Deploy Website
-
-Click "Trigger deploy" > "Deploy site" to manually trigger deployment, or push code to GitHub to automatically trigger deployment.
-
-After deployment is complete, you can access your website via the Netlify-provided domain.
+3. **Deploy**:
+   - Push to GitHub to trigger auto-deployment, or
+   - Manually trigger deployment from Netlify dashboard
 
 ## 📁 Project Structure
 
 ```
 L-blog-lukbuk/
+├── public/                 # Static assets
+│   └── lukbuk.jpg         # Profile avatar
 ├── src/
-│   ├── components/          # Reusable components
-│   │   ├── ColumnCard.tsx  # Column card component
-│   │   ├── Header.tsx      # Header component
-│   │   ├── PostDetail.tsx  # Article detail component
-│   │   ├── PostList.tsx    # Article list component
-│   │   └── WriteForm.tsx   # Article writing form component
-│   ├── contexts/            # React Context
-│   │   └── AuthContext.tsx # Authentication context
-│   ├── pages/              # Page components
-│   │   ├── AboutPage.tsx   # About page
-│   │   ├── ColumnDetailPage.tsx # Column detail page
-│   │   ├── CreateColumnPage.tsx # Create column page
-│   │   ├── HomePage.tsx    # Home page
-│   │   ├── LoginPage.tsx   # Login page
-│   │   ├── PostDetailPage.tsx # Article detail page
-│   │   └── WritePage.tsx   # Write article page
-│   ├── supabase/           # Supabase configuration
-│   │   └── client.ts       # Supabase client
-│   ├── App.css             # Global styles
-│   ├── App.tsx             # Root component
-│   ├── main.tsx            # Entry file
-│   └── vite-env.d.ts       # Vite environment types
-├── .env.example            # Environment variables example
-├── .eslintrc.js            # ESLint configuration
-├── package.json            # Project configuration
-├── tsconfig.json           # TypeScript configuration
-├── tsconfig.node.json      # Node TypeScript configuration
-└── vite.config.ts          # Vite configuration
+│   ├── components/        # Reusable components
+│   │   ├── Header.tsx     # Navigation header
+│   │   ├── PostList.tsx   # Article list
+│   │   ├── PostDetail.tsx # Article detail view
+│   │   └── WriteForm.tsx  # Article editor
+│   ├── contexts/          # React Context providers
+│   │   └── AuthContext.tsx # Authentication logic
+│   ├── hooks/             # Custom React hooks
+│   │   └── useCachedData.ts # Data caching hook
+│   ├── pages/             # Page components
+│   │   ├── HomePage.tsx   # Home with sidebar
+│   │   ├── PostDetailPage.tsx
+│   │   ├── WritePage.tsx
+│   │   └── LoginPage.tsx
+│   ├── supabase/          # Supabase client config
+│   │   └── client.ts
+│   ├── App.tsx            # Root component
+│   ├── main.tsx           # Entry point
+│   └── *.css              # Stylesheets
+├── .env.example           # Environment template
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
-## 📖 Usage Instructions
+## 📖 Usage
 
-### 1. Home Page
+### Home Page
 
-- Displays all column cards
-- Shows a list of articles not published to any column
-- Supports pagination for loading more articles
+- Displays article list with pagination
+- Left sidebar shows:
+  - Profile avatar and name (lukbuk)
+  - Blog introduction
+  - Site statistics (founded date, running days)
+  - Contact information
+  - Social links (GitHub, X)
 
-### 2. Column Detail Page
+### Article Detail
 
-- Left side shows article table of contents
-- Right side displays all articles in the column
-- Click table of contents items to quickly jump to corresponding articles
+- Full article content display
+- Edit/delete options for authenticated users
+- Clean reading experience
 
-### 3. Article Detail Page
+### Write Article
 
-- Displays complete article content
-- Logged-in users can edit or delete their own articles
+- Rich text editing
+- Title and content fields
+- Publish immediately
+- Access controlled by `VITE_ADMIN_ENABLED`
 
-### 4. Write Article
+## 🔧 Development
 
-- Supports title and content editing
-- Can choose to publish to a column or not
-- Supports immediate publishing
-- Only users with admin functionality enabled (VITE_ADMIN_ENABLED=true) and logged in can write articles
-
-### 5. Create Column
-
-- Enter column title and description
-- After creation, you can manage articles in the column detail page
-- Only logged-in users can create columns
-
-## 🔧 Development Guide
-
-### Code Standards
-
-The project uses ESLint and TypeScript ESLint for code standard checking. Run the following command to check code:
+### Code Quality
 
 ```bash
+# Run ESLint
 npm run lint
-```
 
-### Type Checking
-
-```bash
+# Type checking
 npm run typecheck
 ```
 
-### Performance Optimization
+### Build Commands
 
-1. **Component Lazy Loading**: Use React.lazy and Suspense for on-demand component loading
-2. **Code Splitting**: Split dependency libraries into independent chunks
-3. **Pagination**: Article lists use pagination loading strategy
-4. **React.memo**: Use React.memo for pure display components
+```bash
+# Development server
+npm run dev
 
-## 🔧 Admin Functionality Configuration
+# Production build
+npm run build
 
-The project supports controlling the enablement of admin features via environment variables:
-
-```env
-# Enable admin functionality (show write, edit, and delete buttons)
-VITE_ADMIN_ENABLED=true
-
-# Disable admin functionality
-VITE_ADMIN_ENABLED=false
+# Preview production build
+npm run preview
 ```
 
-Admin functionality includes:
-- Write articles
-- Edit articles
-- Delete articles
-- Create columns
+## ⚙️ Configuration
 
-Default value: false
+### Environment Variables
 
-## 📝 Supabase Configuration Note
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_SUPABASE_URL` | Supabase project URL | Required |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Required |
+| `VITE_ADMIN_ENABLED` | Enable admin features (write/edit/delete) | `false` |
 
-It is recommended to disable new user registration in Supabase to prevent unauthorized users from creating accounts. This can be done in the Supabase dashboard under Authentication settings.
+### Supabase Setup
 
-## 🤝 Contribution Guide
+1. Create a new project at [Supabase](https://supabase.com)
+2. Get your project URL and anonymous key from Settings → API
+3. Create necessary tables for posts and users
+4. Configure authentication providers if needed
+
+**Recommendation**: Disable public user registration in Supabase to prevent unauthorized access.
+
+## 🎨 Design Philosophy
+
+This blog follows a **minimalist design philosophy**:
+
+- Clean black & white color scheme
+- Focus on content readability
+- Simple navigation
+- Fast loading performance
+- No unnecessary distractions
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -230,23 +219,23 @@ It is recommended to disable new user registration in Supabase to prevent unauth
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- [React](https://react.dev/) - JavaScript library for building user interfaces
-- [TypeScript](https://www.typescriptlang.org/) - Typed superset of JavaScript
-- [Vite](https://vite.dev/) - Next generation frontend tooling
-- [Supabase](https://supabase.com/) - Open source Firebase alternative
-- [React Router](https://reactrouter.com/) - Declarative React routing
+- [React](https://react.dev/) - UI library
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Vite](https://vite.dev/) - Build tooling
+- [Supabase](https://supabase.com/) - Backend services
+- [React Router](https://reactrouter.com/) - Routing
 
 ## 📞 Contact
 
-For questions or suggestions, please contact:
-
-- GitHub Issues: [https://github.com/devon886/L-blog-lukbuk/issues]
-- Email: zlfdevon@gmail.com
+- **GitHub**: [@devon886](https://github.com/devon886)
+- **Email**: lukbuk@qq.com
+- **Twitter**: [@de_v_o_n](https://x.com/de_v_o_n)
 
 ---
 
-If this project helps you, please give it a ⭐️!
+Built with ❤️ by lukbuk
+
