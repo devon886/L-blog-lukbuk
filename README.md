@@ -7,8 +7,6 @@ A modern blog application built with React + TypeScript + Vite, supporting colum
 
 - 📝 **Article Management**: Publish, edit, and delete articles
 - 📚 **Column Functionality**: Create columns and publish articles to columns
-- 👤 **User Authentication**: Login and registration functionality
-- 📱 **Responsive Design**: Works on both desktop and mobile devices
 - ⚡ **Performance Optimization**: Component lazy loading, pagination, and code splitting
 - 🔍 **Table of Contents**: Column detail pages support article navigation
 - 🔧 **Admin Functionality**: Control write/edit/delete features via environment variables
